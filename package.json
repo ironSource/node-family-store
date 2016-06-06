@@ -1,6 +1,6 @@
 {
   "name": "family-store",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A store that inherits values from its parent(s)",
   "license": "MIT",
   "author": "Vincent Weevers",
