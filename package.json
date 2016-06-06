@@ -1,0 +1,31 @@
+{
+  "name": "family-store",
+  "version": "1.0.0",
+  "description": "A store that inherits values from its parent(s)",
+  "license": "MIT",
+  "author": "Vincent Weevers",
+  "main": "lib/index.js",
+  "files": [
+    "lib/index.js"
+  ],
+  "scripts": {
+    "build": "babel -d lib src",
+    "test": "tape lib/test/*.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "~4.5.1"
+  },
+  "repository": "https://github.com/ironSource/node-family-store",
+  "bugs": "https://github.com/ironSource/node-family-store/issues",
+  "homepage": "https://github.com/ironSource/node-family-store",
+  "keywords": [
+    "store",
+    "abstract-store",
+    "inheritance"
+  ],
+  "engines": {
+    "node": ">=4.0.0",
+    "npm": ">=2.0.0"
+  }
+}
