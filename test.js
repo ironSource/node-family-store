@@ -4,7 +4,7 @@ const tape = require('tape')
     , FamilyStore = require('./')
 
 tape('instanceof', function (t) {
-  const f1 = FamilyStore('f1', new Map)
+  const f1 = new FamilyStore('f1', new Map)
   t.ok(f1 instanceof FamilyStore, 'instanceof')
   t.ok(FamilyStore.is(f1), 'is()')
   t.notOk(FamilyStore.is())
@@ -18,7 +18,7 @@ function suite(name, storage) {
   }
 
   test('keys and pairs', function (t) {
-    const f1 = FamilyStore('f1', storage({ a: 1, b: 0, c: true }))
+    const f1 = new FamilyStore('f1', storage({ a: 1, b: 0, c: true }))
 
     t.ok(Array.isArray(f1.keys()), 'keys')
     t.ok(Array.isArray(f1.ownKeys()), 'ownKeys')
@@ -30,7 +30,7 @@ function suite(name, storage) {
     t.same(f1.pairs(), [ ['a', 1], ['b', 0], ['c', true] ])
     t.same(f1.ownPairs(), [ ['a', 1], ['b', 0], ['c', true] ])
 
-    const f2 = FamilyStore('f2', storage({ a: -1, b: -1, d: null }))
+    const f2 = new FamilyStore('f2', storage({ a: -1, b: -1, d: null }))
     f1.inherit(f2)
 
     t.same(f1.keys(), ['a', 'b', 'c', 'd'])
@@ -54,10 +54,10 @@ function suite(name, storage) {
   })
 
   test('shared dependencies', (t) => {
-    const s1 = FamilyStore('s1', storage())
-    const f1 = FamilyStore('f1', storage(), { inherit: [s1] })
-    const f2 = FamilyStore('f2', storage(), { inherit: [s1] })
-    const f3 = FamilyStore('f3', storage(), { inherit: [f1, f2] })
+    const s1 = new FamilyStore('s1', storage())
+    const f1 = new FamilyStore('f1', storage(), { inherit: [s1] })
+    const f2 = new FamilyStore('f2', storage(), { inherit: [s1] })
+    const f3 = new FamilyStore('f3', storage(), { inherit: [f1, f2] })
 
     const expectedOrder = [f3, f1, f2, s1]
     let i = 0
@@ -70,10 +70,10 @@ function suite(name, storage) {
   })
 
   test('shared dependencies (2)', (t) => {
-    const s1 = FamilyStore('s1', storage())
-    const f1 = FamilyStore('f1', storage(), { inherit: [s1] })
-    const f2 = FamilyStore('f2', storage(), { inherit: [s1] })
-    const f3 = FamilyStore('f3', storage(), { inherit: [f1, s1, f2] })
+    const s1 = new FamilyStore('s1', storage())
+    const f1 = new FamilyStore('f1', storage(), { inherit: [s1] })
+    const f2 = new FamilyStore('f2', storage(), { inherit: [s1] })
+    const f3 = new FamilyStore('f3', storage(), { inherit: [f1, s1, f2] })
 
     const expectedOrder = [f3, f1, s1, f2]
     let i = 0
@@ -86,10 +86,10 @@ function suite(name, storage) {
   })
 
   test('shared dependencies (3)', (t) => {
-    const s1 = FamilyStore('s1', storage())
-    const f1 = FamilyStore('f1', storage(), { inherit: [s1] })
-    const f2 = FamilyStore('f2', storage(), { inherit: [s1] })
-    const f3 = FamilyStore('f3', storage(), { inherit: [f1, s1, f2, s1] })
+    const s1 = new FamilyStore('s1', storage())
+    const f1 = new FamilyStore('f1', storage(), { inherit: [s1] })
+    const f2 = new FamilyStore('f2', storage(), { inherit: [s1] })
+    const f3 = new FamilyStore('f3', storage(), { inherit: [f1, s1, f2, s1] })
 
     const expectedOrder = [f3, f1, s1, f2]
     let i = 0
@@ -102,11 +102,11 @@ function suite(name, storage) {
   })
 
   test('shared dependencies (4)', (t) => {
-    const f1 = FamilyStore('f1', storage())
-        , f2 = FamilyStore('f2', storage(), { inherit: [f1] })
-        , f3 = FamilyStore('f3', storage(), { inherit: [f2, f1] })
-        , f4 = FamilyStore('f4', storage(), { inherit: [f1] })
-        , f5 = FamilyStore('f5', storage(), { inherit: [f4, f3] })
+    const f1 = new FamilyStore('f1', storage())
+        , f2 = new FamilyStore('f2', storage(), { inherit: [f1] })
+        , f3 = new FamilyStore('f3', storage(), { inherit: [f2, f1] })
+        , f4 = new FamilyStore('f4', storage(), { inherit: [f1] })
+        , f5 = new FamilyStore('f5', storage(), { inherit: [f4, f3] })
 
     const expectedOrder
       = [ f5      // self
@@ -124,11 +124,11 @@ function suite(name, storage) {
   })
 
   test('toJSON() and keys()', (t) => {
-    const f1 = FamilyStore('f1', storage())
-        , f2 = FamilyStore('f2', storage(), { inherit: [f1] })
-        , f3 = FamilyStore('f3', storage(), { inherit: [f2, f1] })
-        , f4 = FamilyStore('f4', storage(), { inherit: [f1] })
-        , f5 = FamilyStore('f5', storage(), { inherit: [f4, f3] })
+    const f1 = new FamilyStore('f1', storage())
+        , f2 = new FamilyStore('f2', storage(), { inherit: [f1] })
+        , f3 = new FamilyStore('f3', storage(), { inherit: [f2, f1] })
+        , f4 = new FamilyStore('f4', storage(), { inherit: [f1] })
+        , f5 = new FamilyStore('f5', storage(), { inherit: [f4, f3] })
 
     // Expected order
     f5.set('a', 1) // self
@@ -184,7 +184,7 @@ function suite(name, storage) {
   })
 
   test('__proto key is ignored', function (t) {
-    const f1 = FamilyStore('f1', storage())
+    const f1 = new FamilyStore('f1', storage())
     f1.set('__proto', 34)
     f1.set('beep', 'boop')
     t.same(f1.toJSON(), { beep: 'boop' })
@@ -192,8 +192,8 @@ function suite(name, storage) {
   })
 
   test('clear', function (t) {
-    const f1 = FamilyStore('f1', storage({ a: 1 }))
-        , f2 = FamilyStore('f2', storage({ a: 2, b: 3 }))
+    const f1 = new FamilyStore('f1', storage({ a: 1 }))
+        , f2 = new FamilyStore('f2', storage({ a: 2, b: 3 }))
 
     f1.inherit(f2)
     t.same(f1.toJSON(), { a: 1, b: 3 })
@@ -210,8 +210,8 @@ function suite(name, storage) {
   })
 
   test('recursion', (t) => {
-    const f1 = FamilyStore('f1', storage())
-        , f2 = FamilyStore('f2', storage())
+    const f1 = new FamilyStore('f1', storage())
+        , f2 = new FamilyStore('f2', storage())
 
     f1.inherit(f2)
     f2.inherit(f1)

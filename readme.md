@@ -10,8 +10,8 @@
 const JSONStore = require('atomic-json-store')
 const FamilyStore = require('family-store')
 
-const one = FamilyStore('one', JSONStore('one.json'))
-const two = FamilyStore('two', new Map)
+const one = new FamilyStore('one', JSONStore('one.json'))
+const two = new FamilyStore('two', new Map)
 
 one.inherit(two)
 two.inherit(one)
@@ -91,10 +91,10 @@ Get an object with all values, own and inherited.
 Breadth-first traversal, starting with the store itself. The `function` is called once for every `store` with the arguments `storage`, `store` and `depth` until the function returns a value other than `undefined`.
 
 ```js
-const a = FamilyStore('a', storage())
-const b = FamilyStore('b', storage())
-const c = FamilyStore('c', storage())
-const d = FamilyStore('d', storage())
+const a = new FamilyStore('a', storage())
+const b = new FamilyStore('b', storage())
+const c = new FamilyStore('c', storage())
+const d = new FamilyStore('d', storage())
 
 a.inherit(b)
 a.inherit(c)

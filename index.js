@@ -1,9 +1,5 @@
 'use strict';
 
-function FamilyStoreFactory (name, store, opts) {
-  return new FamilyStore(name, store, opts)
-}
-
 class FamilyStore {
   static is(instance) {
     if (!instance)
@@ -201,9 +197,7 @@ class FamilyStore {
 FamilyStore.prototype.remove = FamilyStore.prototype.delete
 FamilyStore.prototype.inherits = FamilyStore.prototype.inherit
 
-module.exports = FamilyStoreFactory
-FamilyStoreFactory.prototype = FamilyStore.prototype
-FamilyStoreFactory.is = FamilyStore.is
+module.exports = FamilyStore
 
 function compareFirstElement(a_, b_) {
   const a = a_[0], b = b_[0]
