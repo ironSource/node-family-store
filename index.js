@@ -1,17 +1,14 @@
 'use strict';
 
-const inherits = require('util').inherits
-
 function FamilyStoreFactory (name, store, opts) {
-  if (!(this instanceof FamilyStoreFactory)) {
-    return new FamilyStoreFactory(name, store, opts)
-  }
-
-  FamilyStore.call(this, name, store, opts)
+  return new FamilyStore(name, store, opts)
 }
 
 class FamilyStore {
   static is(instance) {
+    if (!instance)
+      return false
+
     if (typeof instance === 'object' && (instance instanceof FamilyStore))
       return true
 
@@ -83,17 +80,22 @@ class FamilyStore {
   }
 
   delete(k) {
-    if (this.store.delete) this.store.delete(k)
-    else this.store.remove(k)
+    if (typeof this.store.delete === 'function') {
+      this.store.delete(k)
+    } else {
+      this.store.remove(k)
+    }
+
     return this
   }
 
   clear() {
-    if (this.store.clear) {
+    if (typeof this.store.clear === 'function') {
       this.store.clear()
     } else {
-      const keys = this.keys()
-      for(let i=0; i<keys.length; i++) this.delete(keys[i])
+      for(let key of this.store.keys()) {
+        this.delete(key)
+      }
     }
 
     return this
@@ -103,9 +105,7 @@ class FamilyStore {
     const acc = []
 
     this.traverse(store => {
-      const keys = store.keys()
-      for(let i=0, l=keys.length; i<l; i++) {
-        const key = keys[i]
+      for(let key of store.keys()) {
         if (acc.indexOf(key) < 0) acc.push(key)
       }
     })
@@ -114,7 +114,7 @@ class FamilyStore {
   }
 
   ownKeys() {
-    return this.store.keys()
+    return toArray(this.store.keys())
   }
 
   pairs() {
@@ -122,11 +122,7 @@ class FamilyStore {
     const seen = new Set
 
     this.traverse(store => {
-      const keys = store.keys()
-
-      for(let i=0, l=keys.length; i<l; i++) {
-        const key = keys[i]
-
+      for(let key of store.keys()) {
         if (!seen.has(key)) {
           const value = store.get(key)
 
@@ -142,7 +138,7 @@ class FamilyStore {
   }
 
   ownPairs() {
-    return this.store.keys().map(key => {
+    return toArray(this.store.keys()).map(key => {
       return [key, this.store.get(key)]
     })
   }
@@ -151,11 +147,8 @@ class FamilyStore {
     const obj = {}
 
     this.traverse(store => {
-      const keys = store.keys()
-
-      for(let i=0, l=keys.length; i<l; i++) {
-        const key = keys[i]
-        if (obj[key] === undefined) {
+      for(let key of store.keys()) {
+        if (key !== '__proto' && obj[key] === undefined) {
           const val = store.get(key)
           if (val !== undefined) obj[key] = val
         }
@@ -209,7 +202,8 @@ FamilyStore.prototype.remove = FamilyStore.prototype.delete
 FamilyStore.prototype.inherits = FamilyStore.prototype.inherit
 
 module.exports = FamilyStoreFactory
-inherits(FamilyStoreFactory, FamilyStore)
+FamilyStoreFactory.prototype = FamilyStore.prototype
+FamilyStoreFactory.is = FamilyStore.is
 
 function compareFirstElement(a_, b_) {
   const a = a_[0], b = b_[0]
@@ -219,4 +213,8 @@ function compareFirstElement(a_, b_) {
   if (a > b) return 1
 
   throw new RangeError(`Unstable sort: ${a} vs ${b}`)
+}
+
+function toArray(a) {
+  return Array.isArray(a) ? a : Array.from(a)
 }

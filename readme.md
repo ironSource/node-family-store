@@ -11,7 +11,7 @@ const JSONStore = require('atomic-json-store')
 const FamilyStore = require('family-store')
 
 const one = FamilyStore('one', JSONStore('one.json'))
-const two = FamilyStore('two', JSONStore('two.json'))
+const two = FamilyStore('two', new Map)
 
 one.inherit(two)
 two.inherit(one)
@@ -35,7 +35,7 @@ The `storage` should have the following synchronous interface:
 - `get(key)`
 - `set(key, value)`
 - `delete(key)` or `remove(key)`
-- `keys()`
+- `keys()` (array or iterable)
 - `clear()` (optional, falls back to `delete()` all `keys()`)
 
 Options:

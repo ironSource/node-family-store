@@ -4,13 +4,8 @@
   "description": "A store that inherits values from its parent(s)",
   "license": "MIT",
   "author": "Vincent Weevers",
-  "main": "lib/index.js",
-  "files": [
-    "lib/index.js"
-  ],
   "scripts": {
-    "build": "babel -d lib src",
-    "test": "tape lib/test/*.js"
+    "test": "node test.js"
   },
   "dependencies": {},
   "devDependencies": {
